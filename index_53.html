@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#07070f">
+<title>FacturARCA</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700;9..40,900&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#07070f;--bg2:#0d0d1c;--bg3:#141426;--line:#222238;--muted:#55557a;--text:#eaeaf8;--blue:#4f85f0;--purple:#9b5de5;--green:#22d49a;--red:#f04f5a;--sans:'DM Sans',sans-serif;--mono:'DM Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);display:flex;align-items:center;justify-content:center;padding:24px}
+
+.container{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;gap:32px}
+
+/* Logo */
+.logo{text-align:center}
+.logo-text{font-size:42px;font-weight:900;letter-spacing:-2px;line-height:1}
+.logo-text em{color:var(--blue);font-style:normal}
+.logo-sub{font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.3px}
+
+/* Glow decoration */
+.glow{position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(79,133,240,.12) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* Cards */
+.cards{width:100%;display:flex;flex-direction:column;gap:12px;position:relative;z-index:1}
+
+.entry-card{display:flex;align-items:center;gap:16px;padding:20px;background:var(--bg2);border:1.5px solid var(--line);border-radius:16px;cursor:pointer;transition:all .2s;text-decoration:none;color:inherit;position:relative;overflow:hidden}
+.entry-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;background:radial-gradient(circle at 30% 50%,var(--card-color) 0%,transparent 60%)}
+.entry-card:hover{border-color:var(--card-color);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.3)}
+.entry-card:hover::before{opacity:.08}
+.entry-card:active{transform:translateY(0)}
+
+.card-cajero{--card-color:var(--blue)}
+.card-admin{--card-color:var(--purple)}
+
+.card-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;position:relative;z-index:1}
+.card-cajero .card-icon{background:rgba(79,133,240,.12);border:1px solid rgba(79,133,240,.2)}
+.card-admin .card-icon{background:rgba(155,93,229,.12);border:1px solid rgba(155,93,229,.2)}
+
+.card-text{flex:1;position:relative;z-index:1}
+.card-title{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.card-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+.card-arrow{color:var(--muted);font-size:18px;transition:transform .2s;position:relative;z-index:1}
+.entry-card:hover .card-arrow{transform:translateX(4px);color:var(--card-color)}
+
+/* Footer */
+.footer{text-align:center;font-size:11px;color:var(--muted);position:relative;z-index:1}
+.footer span{font-family:var(--mono);color:var(--green);font-size:10px}
+</style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<div class="container">
+
+  <div class="logo">
+    <div class="logo-text">Factur<em>ARCA</em></div>
+    <div class="logo-sub">Sistema de Facturación Electrónica</div>
+  </div>
+
+  <div class="cards">
+
+    <a href="factura-arca.html" class="entry-card card-cajero">
+      <div class="card-icon">🧾</div>
+      <div class="card-text">
+        <div class="card-title">Facturar</div>
+        <div class="card-desc">Acceso para cajeros · Emitir comprobantes</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="factura-arca-admin.html" class="entry-card card-admin">
+      <div class="card-icon">⚙️</div>
+      <div class="card-text">
+        <div class="card-title">Administración</div>
+        <div class="card-desc">Cajeros · Barras · Config · Dashboard</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </a>
+
+  </div>
+
+  <div class="footer">
+    <span>● ONLINE</span> · FacturARCA v1.0
+  </div>
+
+</div>
+
+</body>
+</html>
