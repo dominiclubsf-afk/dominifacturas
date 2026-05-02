@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#07070f">
+<title>FacturARCA — Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700;9..40,900&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#07070f;--bg2:#0d0d1c;--bg3:#141426;--bg4:#1b1b30;--line:#222238;--muted:#55557a;--dim:#8080a8;--text:#eaeaf8;--blue:#4f85f0;--purple:#9b5de5;--green:#22d49a;--red:#f04f5a;--amber:#f5a320;--sans:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--r:13px;--rs:8px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden}
+#v-gate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;background:var(--bg);z-index:10}
+.gcard{width:100%;max-width:360px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:14px}
+.glogo{font-size:28px;font-weight:900;letter-spacing:-1px;text-align:center}.glogo em{color:var(--blue);font-style:normal}
+.gsub{font-size:12px;color:var(--muted);text-align:center;margin-top:-6px}
+#v-app{height:100dvh;display:none;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:12px;padding:11px 16px;background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0}
+.tbl{font-size:16px;font-weight:900;letter-spacing:-.5px}.tbl em{color:var(--blue);font-style:normal}
+.tbadge{font-size:10px;font-weight:700;background:rgba(240,79,90,.1);color:var(--red);border:1px solid rgba(240,79,90,.25);padding:2px 8px;border-radius:20px}
+.logoutbtn{margin-left:auto;background:var(--bg4);border:1px solid var(--line);border-radius:6px;color:var(--dim);font-family:var(--sans);font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer}
+.logoutbtn:hover{color:var(--red)}
+.wrap{display:flex;flex:1;overflow:hidden}
+.sidenav{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--line);padding:12px 8px;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+.ni{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:var(--rs);cursor:pointer;transition:all .15s;font-size:13px;font-weight:600;color:var(--muted);border:none;background:transparent;font-family:var(--sans);width:100%;text-align:left}
+.ni:hover{background:var(--bg3);color:var(--text)}.ni.on{background:var(--bg4);color:var(--blue)}
+.ni-ico{font-size:16px;flex-shrink:0}
+.nsep{height:1px;background:var(--line);margin:6px 4px}
+.main{flex:1;overflow-y:auto;padding:18px}
+@media(max-width:600px){.sidenav{width:52px;padding:10px 4px}.ni{justify-content:center;padding:10px}.ni-lbl{display:none}.main{padding:12px}}
+.sec{display:none;flex-direction:column;gap:14px;animation:fade .2s ease}.sec.on{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-size:20px;font-weight:900;letter-spacing:-.5px}
+.ssub{font-size:13px;color:var(--muted);margin-top:-8px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.ct{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:13px;display:flex;align-items:center;justify-content:space-between}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fl{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+.fi,.fs{background:var(--bg3);border:1.5px solid var(--line);border-radius:var(--rs);color:var(--text);font-family:var(--sans);font-size:14px;padding:10px 12px;transition:border-color .15s;width:100%;outline:none;-webkit-appearance:none}
+.fi:focus,.fs:focus{border-color:var(--blue)}.fi::placeholder{color:var(--muted)}.fs option{background:var(--bg3)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mt1{margin-top:6px}.mt2{margin-top:12px}
+.fgrid{display:flex;flex-direction:column;gap:10px}
+.btn{width:100%;padding:12px;border-radius:var(--rs);border:none;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:7px}
+.btn-blue{background:var(--blue);color:#fff}.btn-sec{background:var(--bg3);border:1px solid var(--line);color:var(--text)}.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--dim)}.btn-green{background:var(--green);color:#07070f}
+.btn-sm{padding:7px 12px;font-size:12px;border-radius:6px;width:auto}
+.brow{display:flex;gap:8px}.brow .btn{flex:1}
+.ucard{display:flex;align-items:center;gap:11px;padding:12px;background:var(--bg3);border-radius:var(--rs);border:1px solid var(--line);margin-bottom:8px}
+.ucard:last-child{margin-bottom:0}
+.uav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;flex-shrink:0}
+.uinfo{flex:1;min-width:0}.uname{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;flex-wrap:wrap}.umeta{font-size:11px;color:var(--muted);margin-top:2px}
+.uacts{display:flex;gap:5px;flex-shrink:0}
+.ibtn{width:30px;height:30px;border-radius:6px;border:1px solid var(--line);background:var(--bg4);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+.ibtn:hover{border-color:var(--blue)}
+.bdg{display:inline-flex;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700}
+.bdg-blue{background:rgba(79,133,240,.12);color:var(--blue);border:1px solid rgba(79,133,240,.2)}
+.bdg-red{background:rgba(240,79,90,.1);color:var(--red);border:1px solid rgba(240,79,90,.2)}
+.bdg-amber{background:rgba(245,163,32,.1);color:var(--amber);border:1px solid rgba(245,163,32,.2)}
+.bdg-green{background:rgba(34,212,154,.1);color:var(--green);border:1px solid rgba(34,212,154,.2)}
+.tog{width:42px;height:23px;border-radius:12px;background:var(--line);position:relative;cursor:pointer;transition:background .18s;border:none;flex-shrink:0}
+.tog.on{background:var(--blue)}.tog::after{content:'';position:absolute;top:2px;left:2px;width:19px;height:19px;background:#fff;border-radius:50%;transition:transform .18s}.tog.on::after{transform:translateX(19px)}
+.cfg-row{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg3);border-radius:var(--rs);border:1px solid var(--line)}
+.cfg-lbl{font-size:13px;font-weight:600}.cfg-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sbox{background:var(--bg3);border:1px solid var(--line);border-radius:var(--rs);padding:14px}
+.sval{font-size:22px;font-weight:900;font-family:var(--mono);color:var(--blue)}.slbl{font-size:11px;color:var(--muted);margin-top:3px}
+.trow{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:var(--rs);font-size:13px;background:var(--bg3);margin-bottom:6px;border:1px solid var(--line)}
+.trow:last-child{margin-bottom:0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;z-index:200;backdrop-filter:blur(3px)}
+.ov.on{display:flex}
+.sheet{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r) var(--r) 0 0;padding:18px 16px 32px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:up .22s ease}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.shh{width:32px;height:3px;background:var(--line);border-radius:2px;margin:0 auto 16px}
+.sht{font-size:17px;font-weight:900;margin-bottom:16px}
+.sep{height:1px;background:var(--line);margin:4px 0}
+.empty{text-align:center;padding:36px 20px;color:var(--muted)}.empty .ei{font-size:36px;margin-bottom:8px}
+.mono{font-family:var(--mono)}
+.spin{width:20px;height:20px;border:2px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sbar-ok{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--rs);font-size:12px;font-weight:600;background:rgba(34,212,154,.08);border:1px solid rgba(34,212,154,.2);color:var(--green)}
+.sbar-w{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--rs);font-size:12px;font-weight:600;background:rgba(245,163,32,.08);border:1px solid rgba(245,163,32,.2);color:var(--amber)}
+@media print{body{background:#fff;color:#000}#v-app,#v-gate{display:none!important}#pa{display:block!important}@page{margin:0;size:80mm auto}}
+#pa{display:none;font-family:'Courier New',monospace;font-size:11px;width:72mm;padding:4mm;color:#000;background:#fff;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div id="v-gate">
+  <div class="gcard">
+    <div class="glogo">Factur<em>ARCA</em></div>
+    <div class="gsub">Panel de Administración</div>
+    <div class="fg"><label class="fl">Contraseña de administrador</label>
+      <input type="password" class="fi" id="g-pass" placeholder="••••••" onkeydown="if(event.key==='Enter')checkGate()" autocomplete="current-password">
+    </div>
+    <button class="btn btn-blue" onclick="checkGate()">Ingresar →</button>
+    <div style="text-align:center;font-size:11px;color:var(--muted)">Por defecto: <span class="mono" style="color:var(--dim)">admin123</span></div>
+  </div>
+</div>
+
+<div id="v-app">
+  <div class="topbar">
+    <div class="tbl">Factur<em>ARCA</em></div>
+    <div class="tbadge">ADMIN</div>
+    <button class="logoutbtn" onclick="doLogout()">Cerrar</button>
+  </div>
+  <div class="wrap">
+    <nav class="sidenav">
+      <button class="ni on" id="ni-stats" onclick="goSec('stats')"><span class="ni-ico">📊</span><span class="ni-lbl">Dashboard</span></button>
+      <button class="ni" id="ni-cajeros" onclick="goSec('cajeros')"><span class="ni-ico">👤</span><span class="ni-lbl">Cajeros</span></button>
+      <button class="ni" id="ni-barras" onclick="goSec('barras')"><span class="ni-ico">🍹</span><span class="ni-lbl">Barras</span></button>
+      <div class="nsep"></div>
+      <button class="ni" id="ni-empresa" onclick="goSec('empresa')"><span class="ni-ico">🏢</span><span class="ni-lbl">Empresa</span></button>
+      <button class="ni" id="ni-afip" onclick="goSec('afip')"><span class="ni-ico">🔗</span><span class="ni-lbl">AFIP/ARCA</span></button>
+      <button class="ni" id="ni-email" onclick="goSec('email')"><span class="ni-ico">📧</span><span class="ni-lbl">Email</span></button>
+      <button class="ni" id="ni-imp" onclick="goSec('imp')"><span class="ni-ico">🖨️</span><span class="ni-lbl">Impresión</span></button>
+    </nav>
+    <div class="main">
+
+      <div class="sec on" id="sec-stats">
+        <div class="stitle">Dashboard</div>
+        <div class="stat-grid" id="sg"></div>
+        <div class="card"><div class="ct" style="margin-bottom:8px">Hoy por cajero / barra</div><div id="by-caj"></div></div>
+        <div class="card">
+          <div class="ct">
+            Últimos comprobantes
+            <div style="display:flex;gap:5px">
+              <button class="btn btn-ghost btn-sm" onclick="sf=0;loadStats()">Todos</button>
+              <button class="btn btn-ghost btn-sm" onclick="sf=1;loadStats()">🎟️</button>
+              <button class="btn btn-ghost btn-sm" onclick="sf=2;loadStats()">🍹</button>
+            </div>
+          </div>
+          <div id="last-h"></div>
+        </div>
+      </div>
+
+      <div class="sec" id="sec-cajeros">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div><div class="stitle">Cajeros</div><div class="ssub">Usuarios con acceso a la app</div></div>
+          <button class="btn btn-blue btn-sm" onclick="openFC(null)">+ Nuevo cajero</button>
+        </div>
+        <div class="card"><div id="cajeros-list"></div></div>
+      </div>
+
+      <div class="sec" id="sec-barras">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div><div class="stitle">Barras / Puestos</div><div class="ssub">Puestos del PDV 0002</div></div>
+          <button class="btn btn-blue btn-sm" onclick="openFB(null)">+ Nueva barra</button>
+        </div>
+        <div class="card"><div id="barras-list"></div></div>
+      </div>
+
+      <div class="sec" id="sec-empresa">
+        <div class="stitle">Datos de la Empresa</div>
+        <div class="ssub">Encabezado de los comprobantes</div>
+        <div class="card">
+          <div class="fgrid">
+            <div class="fg"><label class="fl">Razón Social</label><input class="fi" id="e-razon" placeholder="MISOUND SRL"></div>
+            <div class="fg"><label class="fl">CUIT</label><input class="fi mono" id="e-cuit" placeholder="20-12345678-9" inputmode="numeric"></div>
+            <div class="fg"><label class="fl">Domicilio fiscal</label><input class="fi" id="e-dom" placeholder="Av. Principal 1234, Paraná"></div>
+            <div class="fr">
+              <div class="fg"><label class="fl">Inicio Actividades</label><input type="date" class="fi" id="e-inicio"></div>
+              <div class="fg"><label class="fl">IIBB</label><input class="fi mono" id="e-iibb" placeholder="123456789"></div>
+            </div>
+            <div class="fg"><label class="fl">Condición IVA</label>
+              <select class="fs" id="e-cond"><option>Responsable Inscripto</option><option>Monotributista</option><option>Exento</option></select>
+            </div>
+            <div class="fr">
+              <div class="fg"><label class="fl">Nombre PDV 0001</label><input class="fi" id="e-pdv1" placeholder="Entradas"></div>
+              <div class="fg"><label class="fl">Nombre PDV 0002</label><input class="fi" id="e-pdv2" placeholder="Barra"></div>
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-green" onclick="saveEmpresa()">Guardar datos empresa</button>
+      </div>
+
+      <div class="sec" id="sec-afip">
+        <div class="stitle">Backend AFIP / ARCA</div>
+        <div class="ssub">Conexión al servicio de facturación electrónica</div>
+        <div class="card">
+          <div class="fgrid">
+            <div class="fg"><label class="fl">URL del Backend</label><input class="fi mono" id="a-url" placeholder="https://mi-api.netlify.app/api/afip"></div>
+            <div class="fg"><label class="fl">Token</label><input class="fi mono" id="a-token" placeholder="sk-..."></div>
+            <div class="cfg-row">
+              <div><div class="cfg-lbl">Modo Sandbox (homologación)</div><div class="cfg-sub">Activá para pruebas</div></div>
+              <button class="tog on" id="tog-sand" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <div id="afip-sbox" class="sbar-w">⚠️ Sin backend — facturas sin CAE</div>
+            <div class="brow">
+              <button class="btn btn-sec" onclick="testAfip()">🔌 Probar conexión</button>
+              <button class="btn btn-blue" onclick="saveAfip()">Guardar</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct">Cómo conectar AFIP</div>
+          <div style="font-size:13px;color:var(--dim);line-height:1.7;display:flex;flex-direction:column;gap:8px">
+            <div>1️⃣ <b style="color:var(--text)">Certificado Digital</b> — solicitalo en el portal AFIP con tu CUIT</div>
+            <div>2️⃣ <b style="color:var(--text)">Deploy del backend</b> — en Netlify o Vercel (te lo armamos)</div>
+            <div>3️⃣ <b style="color:var(--text)">URL + Token</b> — pegá los datos arriba y guardá</div>
+            <div>4️⃣ <b style="color:var(--text)">Probá en Sandbox</b> antes de pasar a producción</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" id="sec-email">
+        <div class="stitle">Email — Resend</div>
+        <div class="ssub">Envío de comprobantes por correo</div>
+        <div class="card">
+          <div class="fgrid">
+            <div class="fg"><label class="fl">Resend API Key</label><input class="fi mono" id="em-key" placeholder="re_xxxxxxxxxxxxxxxx"></div>
+            <div class="fg"><label class="fl">Email remitente</label><input class="fi" id="em-from" placeholder="facturacion@tudominio.com" inputmode="email"></div>
+            <div class="fg"><label class="fl">Nombre remitente</label><input class="fi" id="em-fname" placeholder="MISOUND — Facturación"></div>
+            <div class="brow">
+              <button class="btn btn-sec" onclick="testEmail()">📨 Enviar prueba</button>
+              <button class="btn btn-blue" onclick="saveEmail()">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" id="sec-imp">
+        <div class="stitle">Impresora Térmica 80mm</div>
+        <div class="ssub">Comandera para comprobantes en papel</div>
+        <div class="card">
+          <div class="fgrid">
+            <div class="cfg-row">
+              <div><div class="cfg-lbl">Imprimir al emitir factura</div><div class="cfg-sub">Abre el diálogo automáticamente</div></div>
+              <button class="tog" id="tog-print" onclick="this.classList.toggle('on')"></button>
+            </div>
+            <button class="btn btn-sec" onclick="testPrint()">🖨️ Imprimir página de prueba</button>
+            <button class="btn btn-blue" onclick="saveImp()">Guardar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ct">Configuración recomendada</div>
+          <div style="font-size:13px;color:var(--dim);line-height:1.7;display:flex;flex-direction:column;gap:8px">
+            <div>1️⃣ Conectá la comandera a la PC (USB o WiFi)</div>
+            <div>2️⃣ Instalá el driver y configurala como impresora predeterminada</div>
+            <div>3️⃣ En el diálogo de impresión: <b style="color:var(--text)">Sin márgenes</b>, papel <b style="color:var(--text)">80mm</b></div>
+            <div>4️⃣ Usá Google Chrome para mejores resultados</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ov-c" onclick="closeOv('ov-c')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="shh"></div><div class="sht" id="fc-t">Cajero</div><div id="fc-b"></div>
+  </div>
+</div>
+<div class="ov" id="ov-b" onclick="closeOv('ov-b')">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="shh"></div><div class="sht" id="fb-t">Barra</div><div id="fb-b"></div>
+  </div>
+</div>
+<div id="pa"></div>
+
+<script>
+const URL_ = 'https://nyxspqgyslxpwnbeeofx.supabase.co';
+const KEY_ = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55eHNwcWd5c2x4cHduYmVlb2Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3NDA4NzAsImV4cCI6MjA5MzMxNjg3MH0.GvD4WN0uAdeIdpGWC7GuzFUtnImGoNHh30E4hrMTqxE';
+const H = {'apikey':KEY_,'Authorization':'Bearer '+KEY_,'Content-Type':'application/json','Prefer':'return=representation'};
+const db = {
+  async get(t,q=''){const r=await fetch(`${URL_}/rest/v1/${t}?${q}`,{headers:H});if(!r.ok)throw new Error(await r.text());return r.json()},
+  async post(t,b){const r=await fetch(`${URL_}/rest/v1/${t}`,{method:'POST',headers:H,body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json()},
+  async patch(t,q,b){const r=await fetch(`${URL_}/rest/v1/${t}?${q}`,{method:'PATCH',headers:H,body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json()},
+  async del(t,q){const r=await fetch(`${URL_}/rest/v1/${t}?${q}`,{method:'DELETE',headers:H});if(!r.ok)throw new Error(await r.text());}
+};
+
+let CFG={},CAJEROS=[],BARRAS=[],sf=0;
+
+async function checkGate(){
+  const pass=document.getElementById('g-pass').value;
+  try{
+    const admins=await db.get('cajeros','admin=eq.true&activo=eq.true');
+    const ok=admins.some(a=>a.pass===pass)||pass==='admin123';
+    if(!ok)return toast('❌ Contraseña incorrecta');
+    document.getElementById('v-gate').style.display='none';
+    document.getElementById('v-app').style.display='flex';
+    await loadAll();
+    goSec('stats');
+  }catch(e){toast('❌ Error: '+e.message);}
+}
+function doLogout(){document.getElementById('v-app').style.display='none';document.getElementById('v-gate').style.display='flex';document.getElementById('g-pass').value='';}
+
+async function loadAll(){
+  try{
+    const [cfgR,caj,bar]=await Promise.all([db.get('config','id=eq.1&select=data'),db.get('cajeros','activo=eq.true&order=name'),db.get('barras','order=name')]);
+    CFG=cfgR[0]?.data||{};CAJEROS=caj;BARRAS=bar;
+    applyCfg();
+  }catch(e){toast('Error cargando datos: '+e.message);}
+}
+
+function applyCfg(){
+  const map={'e-razon':'razon','e-cuit':'cuit','e-dom':'dom','e-iibb':'iibb','e-pdv1':'pdv1','e-pdv2':'pdv2','a-url':'backend','a-token':'token','em-key':'resend','em-from':'fromEmail','em-fname':'fromName','e-inicio':'inicio'};
+  Object.entries(map).forEach(([id,k])=>{const el=document.getElementById(id);if(el&&CFG[k])el.value=CFG[k];});
+  if(CFG.cond)document.getElementById('e-cond').value=CFG.cond;
+  document.getElementById('tog-sand').classList.toggle('on',CFG.sandbox!==false);
+  document.getElementById('tog-print').classList.toggle('on',!!CFG.autoprint);
+  updateAfipBox();
+}
+
+async function saveCfg(partial){
+  CFG={...CFG,...partial};
+  try{await db.patch('config','id=eq.1',{data:CFG});toast('✅ Guardado');}
+  catch(e){toast('❌ Error guardando: '+e.message);}
+}
+function saveEmpresa(){saveCfg({razon:gv('e-razon'),cuit:gv('e-cuit'),dom:gv('e-dom'),iibb:gv('e-iibb'),pdv1:gv('e-pdv1')||'Entradas',pdv2:gv('e-pdv2')||'Barra',cond:gv('e-cond'),inicio:gv('e-inicio')});}
+function saveAfip(){
+  const sand=document.getElementById('tog-sand').classList.contains('on');
+  saveCfg({backend:gv('a-url'),token:gv('a-token'),sandbox:sand});
+  updateAfipBox();
+}
+function saveEmail(){saveCfg({resend:gv('em-key'),fromEmail:gv('em-from'),fromName:gv('em-fname')});}
+function saveImp(){saveCfg({autoprint:document.getElementById('tog-print').classList.contains('on')});}
+function updateAfipBox(){
+  const b=document.getElementById('afip-sbox');if(!b)return;
+  const sand=document.getElementById('tog-sand')?.classList.contains('on');
+  if(CFG.backend){b.className='sbar-ok';b.textContent=`✅ Backend configurado — ${sand?'SANDBOX':'PRODUCCIÓN'}`;}
+  else{b.className='sbar-w';b.textContent='⚠️ Sin backend — facturas sin CAE';}
+}
+
+function goSec(s){
+  document.querySelectorAll('.sec').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  document.getElementById('sec-'+s).classList.add('on');
+  document.getElementById('ni-'+s).classList.add('on');
+  if(s==='stats')loadStats();
+  if(s==='cajeros')renderCajeros();
+  if(s==='barras')renderBarras();
+}
+
+// ── STATS ──
+async function loadStats(){
+  document.getElementById('sg').innerHTML='<div class="spin"></div>';
+  try{
+    const hoy=new Date().toISOString().split('T')[0];
+    let q=`order=created_at.desc&limit=100`;
+    if(sf>0)q+=`&pdv=eq.${sf}`;
+    const [all,todayH]=await Promise.all([db.get('facturas',q),db.get('facturas',`fecha=eq.${hoy}${sf>0?'&pdv=eq.'+sf:''}`)]);
+    const totalHoy=todayH.reduce((a,h)=>a+h.total,0);
+    const totalAll=all.reduce((a,h)=>a+h.total,0);
+    document.getElementById('sg').innerHTML=`
+      <div class="sbox"><div class="sval">${todayH.length}</div><div class="slbl">Facturas hoy</div></div>
+      <div class="sbox"><div class="sval">${fmt(totalHoy)}</div><div class="slbl">Total hoy</div></div>
+      <div class="sbox"><div class="sval">${all.length}</div><div class="slbl">Total facturas</div></div>
+      <div class="sbox"><div class="sval">${fmt(totalAll)}</div><div class="slbl">Total histórico</div></div>`;
+    // Por cajero hoy
+    const byCaj={};
+    todayH.forEach(h=>{const k=h.cajero_name+(h.barra?' · '+h.barra:'');if(!byCaj[k])byCaj[k]={count:0,total:0};byCaj[k].count++;byCaj[k].total+=h.total;});
+    const cajBox=document.getElementById('by-caj');
+    if(!Object.keys(byCaj).length)cajBox.innerHTML='<div class="empty"><div class="ei">📊</div><div>Sin movimientos hoy</div></div>';
+    else cajBox.innerHTML=Object.entries(byCaj).sort((a,b)=>b[1].total-a[1].total).map(([k,v])=>`<div class="trow"><span style="font-weight:600">${esc(k)}</span><div style="text-align:right"><div class="mono" style="font-size:14px;color:var(--blue)">${fmt(v.total)}</div><div style="font-size:10px;color:var(--muted)">${v.count} cbte${v.count!==1?'s':''}</div></div></div>`).join('');
+    // Últimas
+    const col={1:'#4f85f0',6:'#9b5de5',11:'#22d49a'};
+    const lh=document.getElementById('last-h');
+    if(!all.length)lh.innerHTML='<div class="empty"><div class="ei">🧾</div><div>Sin comprobantes</div></div>';
+    else lh.innerHTML=all.slice(0,20).map(h=>`<div class="trow" style="gap:10px"><div style="width:7px;height:7px;border-radius:50%;background:${col[h.tipo_cbte]||'#55557a'};flex-shrink:0"></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;font-family:var(--mono)">${h.tipo_cbte_nombre} N°${h.nro}</div><div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(h.cajero_name)}${h.barra?' · '+esc(h.barra):''} · ${esc(h.razon_social)}</div></div><div style="text-align:right;flex-shrink:0"><div class="mono" style="font-size:13px;font-weight:700">${fmt(h.total)}</div><div style="font-size:10px;color:var(--muted)">${h.fecha}</div></div></div>`).join('');
+  }catch(e){document.getElementById('sg').innerHTML=`<div style="color:var(--red);grid-column:1/-1">Error: ${e.message}</div>`;}
+}
+
+// ── CAJEROS ──
+function renderCajeros(){
+  const pdvN={0:'Todos los PDV',1:CFG.pdv1||'Entradas',2:CFG.pdv2||'Barra'};
+  const list=document.getElementById('cajeros-list');
+  if(!CAJEROS.length){list.innerHTML='<div class="empty"><div class="ei">👤</div><div>Sin cajeros</div></div>';return;}
+  list.innerHTML=CAJEROS.map(c=>`<div class="ucard">
+    <div class="uav" style="background:${c.color||'#4f85f0'}18;color:${c.color||'#4f85f0'}">${c.name.charAt(0).toUpperCase()}</div>
+    <div class="uinfo">
+      <div class="uname">${esc(c.name)}${c.admin?'<span class="bdg bdg-red">Admin</span>':''}</div>
+      <div class="umeta">${pdvN[c.pdv]||'—'}${c.barra?' · '+esc(c.barra):''}</div>
+    </div>
+    <div class="uacts">
+      <button class="ibtn" onclick="openFC(${c.id})">✏️</button>
+      ${!c.admin?`<button class="ibtn" onclick="delCajero(${c.id})" style="color:var(--red)">🗑️</button>`:''}
+    </div>
+  </div>`).join('');
+}
+
+function openFC(id){
+  const c=id?CAJEROS.find(x=>x.id===id):null;
+  document.getElementById('fc-t').textContent=c?'Editar cajero':'Nuevo cajero';
+  const pdvN={0:`Todos los PDV`,1:CFG.pdv1||'Entradas',2:CFG.pdv2||'Barra'};
+  document.getElementById('fc-b').innerHTML=`<div class="fgrid">
+    <div class="fg"><label class="fl">Nombre</label><input class="fi" id="cc-n" value="${esc(c?.name||'')}" placeholder="Nombre completo"></div>
+    <div class="fg"><label class="fl">Contraseña</label><input class="fi mono" id="cc-p" value="${esc(c?.pass||'')}" placeholder="Contraseña de acceso"></div>
+    <div class="fg"><label class="fl">PDV Asignado</label>
+      <select class="fs" id="cc-pdv" onchange="toggleBarraSel()">
+        ${Object.entries(pdvN).map(([v,l])=>`<option value="${v}" ${c?.pdv==v?'selected':''}>${l}</option>`).join('')}
+      </select>
+    </div>
+    <div class="fg" id="cc-bw" style="${c?.pdv===2?'':'display:none'}">
+      <label class="fl">Barra asignada</label>
+      <select class="fs" id="cc-b">
+        <option value="">— Sin barra fija —</option>
+        ${BARRAS.map(b=>`<option value="${b.name}" ${c?.barra===b.name?'selected':''}>${b.name}</option>`).join('')}
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Color</label><input type="color" class="fi" id="cc-col" value="${c?.color||'#4f85f0'}" style="padding:4px;height:44px"></div>
+    ${!c?.admin?`<div class="cfg-row"><div><div class="cfg-lbl">Permisos de administrador</div></div><button class="tog ${c?.admin?'on':''}" id="tog-adm" onclick="this.classList.toggle('on')"></button></div>`:''}
+    <div class="brow mt1">
+      <button class="btn btn-blue" onclick="saveC(${id||'null'})">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeOv('ov-c')">Cancelar</button>
+    </div>
+  </div>`;
+  document.getElementById('ov-c').classList.add('on');
+}
+function toggleBarraSel(){
+  const pdv=parseInt(gv('cc-pdv'));
+  document.getElementById('cc-bw').style.display=pdv===2?'flex':'none';
+}
+async function saveC(id){
+  const name=gv('cc-n').trim(),pass=gv('cc-p').trim(),pdv=parseInt(gv('cc-pdv'));
+  const barra=pdv===2?(gv('cc-b')||null):null;
+  const color=gv('cc-col');
+  const admin=document.getElementById('tog-adm')?.classList.contains('on')||false;
+  if(!name||!pass)return toast('⚠️ Nombre y contraseña requeridos');
+  try{
+    if(id){await db.patch('cajeros',`id=eq.${id}`,{name,pass,pdv,barra,color});}
+    else{await db.post('cajeros',{name,pass,pdv,barra,color,admin,activo:true});}
+    closeOv('ov-c');
+    CAJEROS=await db.get('cajeros','activo=eq.true&order=name');
+    renderCajeros();toast('✅ Cajero guardado');
+  }catch(e){toast('❌ Error: '+e.message);}
+}
+async function delCajero(id){
+  if(!confirm('¿Eliminar cajero?'))return;
+  try{
+    await db.patch('cajeros',`id=eq.${id}`,{activo:false});
+    CAJEROS=await db.get('cajeros','activo=eq.true&order=name');
+    renderCajeros();toast('🗑️ Cajero eliminado');
+  }catch(e){toast('❌ Error: '+e.message);}
+}
+
+// ── BARRAS ──
+function renderBarras(){
+  const list=document.getElementById('barras-list');
+  if(!BARRAS.length){list.innerHTML='<div class="empty"><div class="ei">🍹</div><div>Sin barras</div></div>';return;}
+  list.innerHTML=BARRAS.map(b=>{
+    const asig=CAJEROS.filter(c=>c.barra===b.name);
+    return `<div class="ucard">
+      <div class="uav" style="background:rgba(155,93,229,.15);color:var(--purple);font-size:18px">🍹</div>
+      <div class="uinfo">
+        <div class="uname">${esc(b.name)}</div>
+        <div class="umeta">${asig.length?asig.map(c=>esc(c.name)).join(', '):'Sin cajeros asignados'}</div>
+      </div>
+      <div class="uacts">
+        <button class="ibtn" onclick="openFB(${b.id})">✏️</button>
+        <button class="ibtn" onclick="delBarra(${b.id})" style="color:var(--red)">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openFB(id){
+  const b=id?BARRAS.find(x=>x.id===id):null;
+  document.getElementById('fb-t').textContent=b?'Editar barra':'Nueva barra';
+  document.getElementById('fb-b').innerHTML=`<div class="fgrid">
+    <div class="fg"><label class="fl">Nombre de la barra</label><input class="fi" id="cb-n" value="${esc(b?.name||'')}" placeholder="Ej: Barra VIP, Barra Jardín…"></div>
+    <div class="brow mt1">
+      <button class="btn btn-blue" onclick="saveB(${id||'null'})">Guardar</button>
+      <button class="btn btn-ghost" onclick="closeOv('ov-b')">Cancelar</button>
+    </div>
+  </div>`;
+  document.getElementById('ov-b').classList.add('on');
+}
+async function saveB(id){
+  const name=gv('cb-n').trim();if(!name)return toast('⚠️ Ingresá un nombre');
+  try{
+    if(id)await db.patch('barras',`id=eq.${id}`,{name});
+    else await db.post('barras',{name});
+    closeOv('ov-b');
+    BARRAS=await db.get('barras','order=name');
+    renderBarras();toast('✅ Barra guardada');
+  }catch(e){toast('❌ Error: '+e.message);}
+}
+async function delBarra(id){
+  if(!confirm('¿Eliminar barra?'))return;
+  try{
+    await db.del('barras',`id=eq.${id}`);
+    BARRAS=await db.get('barras','order=name');
+    renderBarras();toast('🗑️ Barra eliminada');
+  }catch(e){toast('❌ Error: '+e.message);}
+}
+
+// ── TESTS ──
+async function testAfip(){
+  const url=gv('a-url');if(!url)return toast('⚠️ URL no configurada');
+  try{const r=await fetch(url+'/ping');toast(r.ok?'✅ Backend OK':'❌ HTTP '+r.status);}
+  catch{toast('❌ No se pudo conectar');}
+}
+async function testEmail(){
+  const key=gv('em-key');if(!key)return toast('⚠️ Ingresá la API Key');
+  const from=gv('em-from')||'test@resend.dev',fname=gv('em-fname')||'FacturARCA';
+  try{
+    const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({from:`${fname} <${from}>`,to:[from],subject:'FacturARCA — Email de prueba',html:'<p>La configuración de email funciona correctamente ✅</p>'})});
+    toast(r.ok?'✅ Email enviado a '+from:'❌ Error Resend: '+r.status);
+  }catch{toast('❌ Error de red');}
+}
+function testPrint(){
+  document.getElementById('pa').innerHTML=`<div style="text-align:center;font-weight:bold;font-size:13px">${esc(CFG.razon||'MI EMPRESA')}</div><div style="text-align:center">CUIT: ${CFG.cuit||'00-00000000-0'}</div><div style="border-top:1px dashed #000;margin:4px 0"></div><div style="text-align:center;font-weight:bold;font-size:14px">PÁGINA DE PRUEBA</div><div style="text-align:center">Impresora 80mm ✓</div><div style="border-top:1px dashed #000;margin:4px 0"></div><div style="text-align:center;font-size:9px">FacturARCA — ${new Date().toLocaleString('es-AR')}</div><div style="height:12mm"></div>`;
+  setTimeout(()=>window.print(),120);
+}
+
+function closeOv(id){document.getElementById(id).classList.remove('on');}
+function gv(id){return document.getElementById(id)?.value||'';}
+function fmt(n){return '$ '+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+let _tt;
+function toast(m,d=2500){let el=document.getElementById('_t');if(!el){el=document.createElement('div');el.id='_t';el.style.cssText='position:fixed;bottom:20px;right:20px;background:#1b1b30;border:1px solid #222238;color:#eaeaf8;padding:10px 18px;border-radius:10px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:opacity .2s;pointer-events:none';document.body.appendChild(el);}el.textContent=m;el.style.opacity='1';clearTimeout(_tt);_tt=setTimeout(()=>el.style.opacity='0',d);}
+</script>
+</body>
+</html>
